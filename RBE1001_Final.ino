@@ -6,10 +6,10 @@
 //CONSTANTS OF THE ROBOT
 const float w = 11.5; //Wheel track of the robot
 const float d = 2.75; //Wheel diameter of the robot
-const float kp_turn = 2.2; //Proportional constant for driving
+const float kp_turn = 2.4; //Proportional constant for driving
 const float kp_drive = 1.0; //Proportional constant for driving straight 
 const int driveError = 10;
-const int turnError = 8;
+const int turnError = 10;
 const int locked = 32; //servo position for locked arm
 const int unlocked = 90; //servo position for unlocked arm
 const int lightToggle = 985; //light<lightToggle, dark>lightToggle
@@ -74,10 +74,10 @@ void turn(int deg) { //MAKE SURE TO ZERO ENCODERS BEFORE CALLING THIS FUNCTION. 
       if(rSpeed<-90) rSpeed =-90;
       if(lSpeed>90) lSpeed =90;
       if(lSpeed<-90) lSpeed =-90;
-      if(rSpeed>15) rSpeed-=12;
-      if(rSpeed<-15) rSpeed+=12;
-      if(lSpeed>15) lSpeed-=12;
-      if(lSpeed<-15) lSpeed+=12;
+      if(rSpeed>20) rSpeed-=17;
+      if(rSpeed<-20) rSpeed+=17;
+      if(lSpeed>20) lSpeed-=17;
+      if(lSpeed<-20) lSpeed+=17;
       lMotor.write(90+lSpeed);
       rMotor.write(90+rSpeed);
       Serial.print(rEncoder.getPos());
@@ -91,16 +91,6 @@ void turn(int deg) { //MAKE SURE TO ZERO ENCODERS BEFORE CALLING THIS FUNCTION. 
   lMotor.write(90);
   rMotor.write(90);
 }
-
-/*void drive(int dist) { //MAKE SURE TO ZERO ENCODERS BEFORE CALLING THIS FUNCTION. forward is +, backwards is -
-  //set encoder setpoint to dist*w/d
-  int setpoint = dist*w/d;
-  //use proportional control to move the bot to setpoint
-  int rSpeed = (setpoint+rEncoder.getPos())*kp_drive;
-  int lSpeed = (setpoint-lEncoder.getPos())*kp_drive;
-  lMotor.write(lSpeed);
-  rMotor.write(rSpeed);
-}*/
 
 //SETUP FUNCTION
 void setup() {
@@ -223,8 +213,8 @@ void autonomous(volatile unsigned long time) {
             //zero encoder positions and turn
             rEncoder.zeroPos();
             lEncoder.zeroPos();
-            if(fieldSide==red) turn(90);
-            else turn(-90);
+            if(fieldSide==red) turn(100);
+            else turn(-100);
             //Drive forward to ensure the light sensors cross the tape line
             rMotor.write(30);
             lMotor.write(150);
@@ -236,7 +226,7 @@ void autonomous(volatile unsigned long time) {
 
           //Drive until line sensor detects a line
           case step3:
-            rMotor.write(30);
+            rMotor.write(50);
             lMotor.write(150);
             if((analogRead(lLine) < lightToggle && fieldSide == red)||(analogRead(rLine) < lightToggle && fieldSide == blue)) {
               rMotor.write(90);
@@ -257,8 +247,8 @@ void autonomous(volatile unsigned long time) {
             //zero encoder positions and turn
             rEncoder.zeroPos();
             lEncoder.zeroPos();          
-            if(fieldSide==red) turn(-100);
-            else turn(100);
+            if(fieldSide==red) turn(-120);
+            else turn(120);
             autoStep = step5;
             break;
 
